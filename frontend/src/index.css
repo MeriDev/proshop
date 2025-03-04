@@ -1,0 +1,25 @@
+main {
+  min-height: 80vh;
+}
+
+.card h3 {
+  padding: 1rem 0;
+  font-size: 2rem;
+}
+
+.rating {
+  display: flex;
+}
+
+.rating span {
+  margin: 0.1rem;
+  color: #f8e825;
+}
+
+.rating span:last-child {
+  margin-left: 10px;
+  font-weight: 700;
+  color: inherit;
+  display: inline-block;
+  margin-top: 5px;
+}
