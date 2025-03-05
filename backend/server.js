@@ -1,12 +1,21 @@
 import colors from 'colors';
-import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import products from './data/products.js';
+
+import express from 'express';
+
+import connectDB from './config/db.js';
+import productRoutes from './routes/productRoutes.js';
+
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 dotenv.config();
 
+connectDB();
+
 const app = express();
+
+const PORT = process.env.PORT || 5000;
 
 // Enable CORS for all routes
 const corsOptions = {
@@ -19,18 +28,13 @@ app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.get('/api/products', (req, res) => {
-  res.status(200).json(products);
-});
-
-app.get('/api/products/:id', (req, res) => {
-  const product = products.find(p => p._id === req.params.id);
-
-  res.status(200).json(product);
-});
-
-const PORT = process.env.PORT || 5000;
+app.use('/api/products', productRoutes);
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`.magenta);
+  console.log(
+    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.magenta
+      .bold
+  );
 });
