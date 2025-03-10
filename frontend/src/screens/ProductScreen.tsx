@@ -1,29 +1,30 @@
-import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import axios from 'axios';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import { productType } from '../types/types';
+import { useGetProductsDetailsQuery } from '../slices/productSlice';
+import Loader from '../components/Loader';
+import Message from '../components/Message';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 const ProductScreen = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState<productType>();
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const { data } = await axios.get<productType>(`/api/products/${id}`);
-      setProduct(data);
-    };
-    fetchProducts();
-  }, [id]);
+  const { id: productId } = useParams<{ id: string }>();
+  const {
+    data: product,
+    isError,
+    isLoading,
+  } = useGetProductsDetailsQuery(productId ? productId : skipToken);
 
   return (
     <>
-      {product ? (
+      <Link to="/" className="btn btn-light my-3">
+        Go back
+      </Link>
+      {isLoading ? (
+        <Loader />
+      ) : isError ? (
+        <Message variant="danger">Something went wrong</Message>
+      ) : product ? (
         <>
-          <Link to="/" className="btn btn-light my-3">
-            Go back
-          </Link>
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid />
@@ -79,9 +80,7 @@ const ProductScreen = () => {
             </Col>
           </Row>
         </>
-      ) : (
-        <div>Product not found</div>
-      )}
+      ) : null}
     </>
   );
 };
