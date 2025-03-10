@@ -10,7 +10,7 @@ const ProductScreen = () => {
   const { id: productId } = useParams<{ id: string }>();
   const {
     data: product,
-    isError,
+    error,
     isLoading,
   } = useGetProductsDetailsQuery(productId ? productId : skipToken);
 
@@ -21,8 +21,20 @@ const ProductScreen = () => {
       </Link>
       {isLoading ? (
         <Loader />
-      ) : isError ? (
-        <Message variant="danger">Something went wrong</Message>
+      ) : error ? (
+        <Message variant="danger">
+          {(() => {
+            if ('status' in error) {
+              return 'error' in error
+                ? error.error
+                : JSON.stringify(error.data);
+            } else if ('message' in error) {
+              return error.message;
+            }
+
+            return 'An unexpected error occurred';
+          })()}
+        </Message>
       ) : product ? (
         <>
           <Row>

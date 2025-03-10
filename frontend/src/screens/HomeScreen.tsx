@@ -6,14 +6,25 @@ import Product from '../components/Product';
 import { productType } from '../types/types';
 
 const HomeScreen = () => {
-  const { data: products, isError, isLoading } = useGetProductsQuery();
+  const { data: products, error, isLoading } = useGetProductsQuery();
 
   return (
     <>
       {isLoading ? (
         <Loader />
-      ) : isError ? (
-        <Message variant="danger">Something went wrong</Message>
+      ) : error ? (
+        <Message variant="danger">
+          {(() => {
+            if ('status' in error) {
+              return 'error' in error
+                ? error.error
+                : JSON.stringify(error.data);
+            } else if ('message' in error) {
+              return error.message;
+            }
+            return 'An unexpected error occurred';
+          })()}
+        </Message>
       ) : products ? (
         <>
           <h1>Latest Products</h1>
