@@ -1,4 +1,4 @@
-export type productType = {
+export interface ProductType {
   _id: string;
   name: string;
   image: string;
@@ -9,6 +9,8 @@ export type productType = {
   countInStock: number;
   rating: number;
   numReviews: number;
-};
+}
 
-export type productsType = productType[]; // Array of productType objects
+export interface CartItemType extends ProductType {
+  qty: number;
+}
