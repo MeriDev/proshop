@@ -13,7 +13,7 @@ import { FaTrash } from 'react-icons/fa';
 
 import Message from '../components/Message';
 import { CartItemType } from '../types/types';
-import { addToCart } from '../slices/cartSlice';
+import { addToCart, removeFromCart } from '../slices/cartSlice';
 
 const CartScreen = () => {
   const navigate = useNavigate();
@@ -27,7 +27,7 @@ const CartScreen = () => {
   };
 
   const removeFromCartHandler = (id: string) => {
-    console.log(id);
+    dispatch(removeFromCart(id));
   };
 
   const checkoutHandler = () => {
@@ -56,8 +56,7 @@ const CartScreen = () => {
                   </Col>
                   <Col md={2}>$ {item.price}</Col>
                   <Col md={2}>
-                    <Form.Control
-                      as="select"
+                    <Form.Select
                       value={item.qty}
                       onChange={e =>
                         handleQtyChange(item, Number(e.target.value))
@@ -68,7 +67,7 @@ const CartScreen = () => {
                           {q + 1}
                         </option>
                       ))}
-                    </Form.Control>
+                    </Form.Select>
                   </Col>
                   <Col md={2}>
                     <Button
@@ -93,7 +92,7 @@ const CartScreen = () => {
                 Subtotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
                 items
               </h2>
-              $ (
+              &nbsp; $ (
               {cartItems
                 .reduce((acc, item) => acc + item.qty * item.price, 0)
                 .toFixed(2)}
