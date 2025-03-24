@@ -20,17 +20,3 @@ export const productSlice = apiSlice.injectEndpoints({
 });
 
 export const { useGetProductsQuery, useGetProductsDetailsQuery } = productSlice;
-
-// const initialState = {
-//   products: [],
-//   loading: false,
-//   success: false,
-//   error: false,
-//   message: '',
-// };
-
-// export const productSlice = createSlice({
-//   name: 'products',
-//   initialState,
-//   reducers: {},
-// });
