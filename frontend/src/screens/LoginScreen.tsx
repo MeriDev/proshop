@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Row, Col, Form, Button } from 'react-bootstrap';
@@ -9,13 +9,20 @@ import { setCredentials } from '../slices/authSlice';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 
+type CustomError = {
+  data?: {
+    message?: string;
+  };
+  error?: string;
+};
+
 const LoginScreen = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const [login, { isLoading }] = useLoginMutation();
 
-  const { userInfo } = useSelector(state => state.auth);
+  const { userInfo } = useAppSelector(state => state.auth);
 
   const [formFields, setFormFields] = useState({
     email: '',
@@ -44,8 +51,9 @@ const LoginScreen = () => {
       const user = await login(formFields).unwrap();
       dispatch(setCredentials({ ...user }));
       navigate(redirect);
-    } catch (err: unknown) {
-      toast.error(err?.data?.message || err.error);
+    } catch (err) {
+      const error = err as CustomError;
+      toast.error(error.data?.message || error.error);
     }
   };
 
