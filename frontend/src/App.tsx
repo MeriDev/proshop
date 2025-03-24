@@ -21,7 +21,7 @@ function App() {
             <Route path="/product/:id" element={<ProductScreen />} />
             <Route path="/cart/:id?" element={<CartScreen />} />
             <Route path="/login" element={<LoginScreen />} />
-            <Route path="/users" element={<RegisterScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
           </Routes>
         </main>
       </Container>
