@@ -56,6 +56,7 @@ const RegisterScreen = () => {
       try {
         const user = await register(formFields).unwrap();
         dispatch(setCredentials({ ...user }));
+        toast.success(`Welcome, to Propshop, ${user.name}`);
         navigate(redirect);
       } catch (err) {
         const error = err as CustomError;
@@ -101,7 +102,7 @@ const RegisterScreen = () => {
         <Form.Group className="my-2" controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            type="confirmPassword"
+            type="password"
             value={formFields.confirmPassword}
             name="confirmPassword"
             onChange={handleChange}
