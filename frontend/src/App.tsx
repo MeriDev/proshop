@@ -10,6 +10,8 @@ import ProductScreen from './screens/ProductScreen';
 import CartScreen from './screens/CartScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
             <Route path="/cart/:id?" element={<CartScreen />} />
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
+            <Route path="" element={<PrivateRoute />}>
+              <Route path="/profile" element={<ProfileScreen />} />
+            </Route>
           </Routes>
         </main>
         <ToastContainer />
