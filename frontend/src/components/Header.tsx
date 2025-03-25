@@ -42,7 +42,7 @@ const Header = () => {
               navbarScroll
             >
               <Nav.Link as={Link} to="/cart" className="flex">
-                <FaShoppingCart /> Cart
+                <FaShoppingCart style={{ marginRight: '5px' }} /> Cart
                 {cartItems.length > 0 && (
                   <Badge pill bg="success" style={{ marginLeft: '8px' }}>
                     {cartItems.reduce((acc, cur) => acc + cur.qty, 0)}
