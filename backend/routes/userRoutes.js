@@ -3,6 +3,7 @@ import {
   authUser,
   getUserProfile,
   registerUser,
+  logoutUser,
 } from '../controllers/userController.js';
 import { protectRoute } from '../middleware/authMiddleware.js';
 
@@ -10,6 +11,7 @@ const router = express.Router();
 
 router.post('/', registerUser);
 router.post('/login', authUser);
+router.post('/logout', logoutUser);
 router.route('/profile').get(protectRoute, getUserProfile);
 
 export default router;

@@ -75,4 +75,13 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUserProfile, registerUser };
+// @desc    Logout user / clear cookie
+// @route   POST /api/users/logout
+// @access  Public
+
+const logoutUser = (req, res) => {
+  res.clearCookie('jwt');
+  res.status(200).json({ message: 'Logged out Succeesfully' });
+};
+
+export { authUser, getUserProfile, registerUser, logoutUser };
