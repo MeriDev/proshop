@@ -1,12 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CartItemType } from '../types/types';
+import { CartItemType, shippingType } from '../types/types';
 
-type SliceState = { cartItems: CartItemType[] };
+type SliceState = {
+  cartItems: CartItemType[];
+  shippingAddress: shippingType;
+};
 
 const initialState: SliceState = localStorage.getItem('cart')
   ? JSON.parse(localStorage.getItem('cart') ?? '{}')
   : {
       cartItems: [],
+      shippingAddress: {},
     };
 
 export const cartSlice = createSlice({
@@ -31,13 +35,27 @@ export const cartSlice = createSlice({
       state.cartItems = state.cartItems.filter(p => p._id !== action.payload);
       localStorage.setItem('cart', JSON.stringify(state));
     },
-
+    saveShippingAddress(state, action) {
+      state.shippingAddress = action.payload;
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
+    clearCartItems: state => {
+      state.cartItems = [];
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
     resetCart: state => {
       state.cartItems = initialState.cartItems;
+      state.shippingAddress = initialState.shippingAddress;
     },
   },
 });
 
-export const { addToCart, removeFromCart, resetCart } = cartSlice.actions;
+export const {
+  addToCart,
+  removeFromCart,
+  saveShippingAddress,
+  resetCart,
+  clearCartItems,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

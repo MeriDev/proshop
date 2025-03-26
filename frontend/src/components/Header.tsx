@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../app/hooks';
 import { useLogoutMutation } from '../slices/userSlice';
 import { logout } from '../slices/authSlice';
-import { resetCart } from '../slices/cartSlice';
+import { resetCart, clearCartItems } from '../slices/cartSlice';
 
 const Header = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +21,7 @@ const Header = () => {
       dispatch(logout());
 
       dispatch(resetCart());
+      dispatch(clearCartItems());
       navigate('/login');
     } catch (err) {
       console.error(err);
