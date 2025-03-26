@@ -4,6 +4,7 @@ import { CartItemType, shippingType } from '../types/types';
 type SliceState = {
   cartItems: CartItemType[];
   shippingAddress: shippingType;
+  paymentMethod: string;
 };
 
 const initialState: SliceState = localStorage.getItem('cart')
@@ -11,6 +12,7 @@ const initialState: SliceState = localStorage.getItem('cart')
   : {
       cartItems: [],
       shippingAddress: {},
+      paymentMethod: 'PayPal',
     };
 
 export const cartSlice = createSlice({
@@ -39,6 +41,10 @@ export const cartSlice = createSlice({
       state.shippingAddress = action.payload;
       localStorage.setItem('cart', JSON.stringify(state));
     },
+    savePaymentMethod(state, action) {
+      state.paymentMethod = action.payload;
+      localStorage.setItem('cart', JSON.stringify(state));
+    },
     clearCartItems: state => {
       state.cartItems = [];
       localStorage.setItem('cart', JSON.stringify(state));
@@ -56,6 +62,7 @@ export const {
   saveShippingAddress,
   resetCart,
   clearCartItems,
+  savePaymentMethod,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
