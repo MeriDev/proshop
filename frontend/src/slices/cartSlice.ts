@@ -1,10 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CartItemType, shippingType } from '../types/types';
+import { updateCart } from '../utils/cartUtils';
 
 type SliceState = {
   cartItems: CartItemType[];
   shippingAddress: shippingType;
   paymentMethod: string;
+  itemsPrice: number;
+  shippingPrice: number;
+  taxPrice: number;
+  totalPrice: number;
 };
 
 const initialState: SliceState = localStorage.getItem('cart')
@@ -31,11 +36,11 @@ export const cartSlice = createSlice({
       } else {
         state.cartItems = [...state.cartItems, item];
       }
-      localStorage.setItem('cart', JSON.stringify(state));
+      updateCart(state);
     },
     removeFromCart: (state, action: PayloadAction<string>) => {
       state.cartItems = state.cartItems.filter(p => p._id !== action.payload);
-      localStorage.setItem('cart', JSON.stringify(state));
+      updateCart(state);
     },
     saveShippingAddress(state, action) {
       state.shippingAddress = action.payload;
