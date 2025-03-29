@@ -14,7 +14,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import PrivateRoute from './components/PrivateRoute';
 import ShippingScreen from './screens/ShippingScreen';
 import PaymentScreen from './screens/PaymentScreen';
-import PlaceOrderScreen from './screens/PlaceOrderScreen';
+import PlaceOrderScreen from './screens/PlceOrderScreen';
 
 function App() {
   return (

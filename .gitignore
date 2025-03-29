@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.local
 backend/seeder.js
+
+backend/data
+backend/data/*
