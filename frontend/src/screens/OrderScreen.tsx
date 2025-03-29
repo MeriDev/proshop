@@ -24,13 +24,9 @@ type CartItem = {
 };
 
 const OrderScreen = () => {
-  const { orderId } = useParams<{ orderId: string }>();
+  const { id } = useParams<{ id: string }>();
 
-  const {
-    data: orderDetails,
-    isLoading,
-    error,
-  } = useGetOrderDetailsQuery(orderId);
+  const { data: orderDetails, isLoading, error } = useGetOrderDetailsQuery(id);
 
   // const { userInfo } = useAppSelector(state => state.auth);
 
@@ -77,6 +73,14 @@ const OrderScreen = () => {
                 {orderDetails.shippingAddress.postalCode},{' '}
                 {orderDetails.shippingAddress.country}
               </p>
+
+              {orderDetails.isDelivered ? (
+                <Message variant="success">
+                  Delivered on {orderDetails.deliveredAt}
+                </Message>
+              ) : (
+                <Message variant="danger">Not Delivered Yet </Message>
+              )}
             </ListGroup.Item>
 
             <ListGroup.Item>
@@ -85,15 +89,22 @@ const OrderScreen = () => {
                 <strong>Method: </strong>
                 {orderDetails.paymentMethod}
               </p>
+              {orderDetails.isPaid ? (
+                <Message variant="success">
+                  Paid on {orderDetails.paidAt}
+                </Message>
+              ) : (
+                <Message variant="danger">Not Paid Yet </Message>
+              )}
             </ListGroup.Item>
 
             <ListGroup.Item>
-              <h2>Order Item</h2>
-              {orderDetails.cartItems.length === 0 ? (
+              <h2>Order Items</h2>
+              {orderDetails.orderItems.length === 0 ? (
                 <Message>Your cart is empty</Message>
               ) : (
                 <ListGroup variant="flush">
-                  {orderDetails.cartItems.map(
+                  {orderDetails.orderItems.map(
                     (item: CartItem, index: number) => (
                       <ListGroup.Item key={index}>
                         <Row>
