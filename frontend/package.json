@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@paypal/react-paypal-js": "^8.8.2",
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.1",
     "react": "^19.0.0",
