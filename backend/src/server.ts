@@ -1,17 +1,16 @@
-import colors from 'colors';
+import 'colors';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import express from 'express';
 
-import connectDB from './config/db.js';
+import connectDB from './config/db';
+import { errorHandler, notFound } from './middleware/errorMiddleware';
 
-import { errorHandler, notFound } from './middleware/errorMiddleware.js';
-
-import productRoutes from './routes/productRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import orderRoutes from './routes/orderRoutes.js';
+import productRoutes from './routes/productRoutes';
+import userRoutes from './routes/userRoutes';
+import orderRoutes from './routes/orderRoutes';
 
 dotenv.config();
 
