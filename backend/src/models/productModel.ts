@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import { InferSchemaType, Schema, model } from 'mongoose';
 
-const reviewSchema = new mongoose.Schema(
+const reviewSchema = new Schema(
   {
     name: {
       type: String,
@@ -20,10 +20,10 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-const productSchema = new mongoose.Schema(
+const productSchema = new Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       required: true,
       ref: 'User',
     },
@@ -74,5 +74,7 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-const Product = mongoose.model('Product', productSchema);
+type ProductType = InferSchemaType<typeof productSchema>;
+
+const Product = model<ProductType>('Product', productSchema);
 export default Product;

@@ -1,7 +1,15 @@
-import mongoose from 'mongoose';
+import { InferSchemaType, Document, Schema, model } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-const userSchema = new mongoose.Schema(
+interface User extends Document {
+  name: string;
+  email: string;
+  password: string;
+  isAdmin: boolean;
+  matchPassword(enteredPassword: string): Promise<boolean>;
+}
+
+const userSchema = new Schema<User>(
   {
     name: {
       type: String,
@@ -27,7 +35,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-userSchema.methods.matchPassword = async function (enteredPassword) {
+userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
@@ -40,5 +48,7 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('User', userSchema);
+type UserType = InferSchemaType<typeof userSchema>;
+
+const User = model<UserType>('User', userSchema);
 export default User;

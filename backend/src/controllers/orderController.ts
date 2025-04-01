@@ -29,6 +29,10 @@ const addOrderItems = asyncHandler(async (req, res) => {
       const matchingItemFromDB = itemsFromDB.find(
         itemFromDB => itemFromDB._id.toString() === itemFromClient._id
       );
+      if (!matchingItemFromDB) {
+        throw new Error(`Product not found: ${itemFromClient._id}`);
+      }
+
       return {
         ...itemFromClient,
         product: itemFromClient._id,
@@ -39,7 +43,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
     const order = new Order({
       orderItems: dbOrderItems,
-      user: req.user._id,
+      user: (req as any).user._id,
       shippingAddress,
       paymentMethod,
       itemsPrice,
@@ -79,7 +83,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 
   if (order) {
     order.isPaid = true;
-    order.paidAt = Date.now();
+    order.paidAt = new Date();
     order.paymentResult = {
       id: req.body.id,
       status: req.body.status,
