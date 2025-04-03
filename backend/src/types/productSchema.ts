@@ -39,8 +39,7 @@ export const createReviewSchema = z.object({
   comment: z.string().min(1, 'Review comment is required'),
 });
 
-export const productsSchema = z.array(productSchema);
-export type ProductZType = z.infer<typeof productSchema>;
+export type ProductSchema = z.infer<typeof productSchema>;
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 export type CreateReviewInput = z.infer<typeof createReviewSchema>;

@@ -5,8 +5,10 @@
   "description": "MERN ecom app",
   "main": "src/server.ts",
   "scripts": {
-    "start": "tsx --watch src/server.ts",
-    "server": "concurrently \" npm run start\" \"cd ../frontend && npm run dev\"",
+    "dev": "tsc --noEmit && tsx --watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "server": "concurrently \" npm run dev\" \"cd ../frontend && npm run dev\"",
     "data:import": "node seeder",
     "data:destroy": "node seeder -d"
   },
