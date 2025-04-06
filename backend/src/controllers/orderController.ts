@@ -99,4 +99,6 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   }
 });
 
+const getPaypalClient = (req, res) => {};
+
 export { addOrderItems, getOrderById, updateOrderToPaid };

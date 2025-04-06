@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import express from 'express';
+import { Request, Response } from 'express';
 
 import connectDB from './config/db';
 import { errorHandler, notFound } from './middleware/errorMiddleware';
@@ -36,6 +37,11 @@ app.use(cookieParser());
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
+
+//paypal ID
+app.get('/api/config/paypal', (req: Request, res: Response) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT });
+});
 
 app.use(notFound);
 app.use(errorHandler);

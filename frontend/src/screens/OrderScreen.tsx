@@ -1,12 +1,23 @@
-// import { useEffect } from 'react';
+import { useEffect } from 'react';
+import {
+  usePayPalScriptReducer,
+  PayPalButtons,
+  DISPATCH_ACTION,
+  SCRIPT_LOADING_STATE,
+} from '@paypal/react-paypal-js';
+
 // import { useAppSelector } from '../app/hooks';
 import { Link, useParams } from 'react-router-dom';
-import Message from '../components/Message';
-import { Row, Col, ListGroup, Button, Image, Card } from 'react-bootstrap';
-
-import { useGetOrderDetailsQuery } from '../slices/orderSlice';
-import Loader from '../components/Loader';
+import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+
+import Message from '../components/Message';
+import {
+  useGetOrderDetailsQuery,
+  useGetPaypalClientIdQuery,
+  usePayOrderMutation,
+} from '../slices/orderSlice';
+import Loader from '../components/Loader';
 
 type CustomError = {
   data?: {
@@ -24,24 +35,82 @@ type CartItem = {
 };
 
 const OrderScreen = () => {
-  const { id } = useParams<{ id: string }>();
-
-  const { data: orderDetails, isLoading, error } = useGetOrderDetailsQuery(id);
-
+  const { id: orderId } = useParams<{ id: string }>();
   // const { userInfo } = useAppSelector(state => state.auth);
 
-  // useEffect(() => {}, []);
+  const {
+    data: orderDetails,
+    refetch,
+    isLoading,
+    error,
+  } = useGetOrderDetailsQuery(orderId);
 
-  const deliverHandler = async () => {
-    try {
-      console.log('Delivering order...');
-    } catch (error) {
-      const customError = error as CustomError;
-      toast.error(
-        customError.data?.message || customError.error || 'Something went wrong'
-      );
+  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+
+  const {
+    data: paypal,
+    isLoading: loadingPaypal,
+    error: errorPaypal,
+  } = useGetPaypalClientIdQuery('');
+
+  const [{ isPending }, dispatch] = usePayPalScriptReducer();
+
+  useEffect(() => {
+    if (!errorPaypal && !loadingPaypal && paypal.clientId) {
+      const loadPaypalScript = async () => {
+        dispatch({
+          type: DISPATCH_ACTION.RESET_OPTIONS,
+          value: {
+            clientId: paypal.clientId,
+            currency: 'USD',
+          },
+        });
+
+        dispatch({
+          type: DISPATCH_ACTION.LOADING_STATUS,
+          value: SCRIPT_LOADING_STATE.PENDING,
+        });
+      };
+      if (orderDetails && !orderDetails.isPaid) {
+        if (!window.paypal) {
+          loadPaypalScript();
+        }
+      }
     }
-  };
+  }, [errorPaypal, loadingPaypal, orderDetails, paypal, dispatch]);
+
+  function createOrder(data, actions: any) {
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: orderDetails.totalPrice },
+          },
+        ],
+      })
+      .then((orderId: string) => {
+        return orderId;
+      });
+  }
+
+  function onApprove(data: any, actions: any) {
+    return actions.order.capture().then(async function (details) {
+      try {
+        await payOrder({ orderId, details });
+        refetch();
+        toast.success('Payment Successful');
+      } catch (err) {
+        const error = err as CustomError;
+
+        toast.error(error?.data?.message || error.error);
+      }
+    });
+  }
+
+  function onError(err) {
+    toast.error(err.message);
+  }
+
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -162,15 +231,23 @@ const OrderScreen = () => {
                   <Col>${orderDetails.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
-              <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn btn-black"
-                  onClick={deliverHandler}
-                >
-                  Mark As Delivered
-                </Button>
-              </ListGroup.Item>
+
+              {!orderDetails.isPaid && (
+                <ListGroup.Item>
+                  {loadingPay && <Loader />}
+                  {isPending ? (
+                    <Loader />
+                  ) : (
+                    <div>
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
+                    </div>
+                  )}
+                </ListGroup.Item>
+              )}
             </ListGroup>
           </Card>
         </Col>
